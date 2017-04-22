@@ -1,5 +1,6 @@
 package com.example;
 
+import com.cloudera.dsi.dataengine.utilities.TimestampTz;
 import org.fluttercode.datafactory.impl.DataFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Random;
 
@@ -33,16 +35,15 @@ public class WebStatGenerator {
                     .setActiveVisitor(df.getNumberUpTo(999))
                     .setDb(df.getNumberUpTo(999))
                     .setCore(df.getNumberUpTo(999));
-            LOG.info("Created WebStat --> "+ webStat);
-            String sql = "INSERT INTO TABLE WEB_STAT VALUES (?," +
+            //LOG.info("Created WebStat --> "+ webStat);
+            String sql = "INSERT INTO WEB_STAT VALUES (?," +
                     " ?, ?, ?, ?, ?, ?)";
 
-            jdbcTemplate.getDataSource().getConnection();
-            int update = jdbcTemplate.update(sql, new Object[]{"cast('NA"+webStat.getHost()+"' as char(2))",
-                    webStat.getDomain(), webStat.getDate(), webStat.getFeature(),
+            int update = jdbcTemplate.update(sql, new Object[]{webStat.getHost(),
+                    webStat.getDomain(), TimestampTz.from(Instant.now()), webStat.getFeature(),
                     webStat.getActiveVisitor(), webStat.getDb(), webStat.getCore()});
 
-            if (update == 0){
+            if (update == -1){
                 LOG.info("Inserted WebStat --> "+ webStat);
             }
 

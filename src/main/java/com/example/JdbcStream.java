@@ -1,7 +1,10 @@
 package com.example;
 
 
-import com.cloudera.impala.jdbc.common.AbstractDataSource;
+
+
+
+import com.cloudera.jdbc.jdbc41.S41ForwardResultSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -9,11 +12,9 @@ import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.io.Closeable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -30,7 +31,7 @@ import java.util.stream.StreamSupport;
 public class JdbcStream extends JdbcTemplate {
 
     @Autowired
-    public JdbcStream(AbstractDataSource dataSource) {
+    public JdbcStream(DataSource dataSource) {
         super(dataSource);
     }
 
@@ -47,12 +48,8 @@ public class JdbcStream extends JdbcTemplate {
 
                 @Override
                 public SqlRow next() {
-                    try {
-                        if (resultSet.isLast()) {
-                            throw new NoSuchElementException();
-                        }
-                    } catch (SQLException e) {
-                        throw new RuntimeException("Error handling the resultSet");
+                    if (!rowSet.next()) {
+                        throw new NoSuchElementException();
                     }
                     return sqlRow;
                 }
@@ -86,12 +83,20 @@ public class JdbcStream extends JdbcTemplate {
             Supplier<Spliterator<SqlRow>> supplier = () -> Spliterators.spliteratorUnknownSize(new Iterator<SqlRow>() {
                 @Override
                 public boolean hasNext() {
-                    return !rowSet.isLast();
+                    return rowSet.next();
                 }
 
                 @Override
                 public SqlRow next() {
-                    if (rowSet.isLast()) {
+                    ResultSetWrappingSqlRowSet resultSetWrappingSqlRowSet = (ResultSetWrappingSqlRowSet) rowSet;
+                    S41ForwardResultSet resultSet = (S41ForwardResultSet) resultSetWrappingSqlRowSet.getResultSet();
+                    boolean closed = false;
+                    try {
+                        closed = resultSet.isClosed();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    if (closed) {
                         throw new NoSuchElementException();
                     }
                     return sqlRow;
