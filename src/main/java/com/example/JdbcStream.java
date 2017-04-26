@@ -88,17 +88,6 @@ public class JdbcStream extends JdbcTemplate {
 
                 @Override
                 public SqlRow next() {
-                    ResultSetWrappingSqlRowSet resultSetWrappingSqlRowSet = (ResultSetWrappingSqlRowSet) rowSet;
-                    S41ForwardResultSet resultSet = (S41ForwardResultSet) resultSetWrappingSqlRowSet.getResultSet();
-                    boolean closed = false;
-                    try {
-                        closed = resultSet.isClosed();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    if (closed) {
-                        throw new NoSuchElementException();
-                    }
                     return sqlRow;
                 }
             }, Spliterator.IMMUTABLE);
@@ -123,6 +112,8 @@ public class JdbcStream extends JdbcTemplate {
         String getString(String columnLabel);
 
         Timestamp getTimestamp(String columnLabel);
+
+        Float getFloat(String columnLabel);
     }
 
     public class SqlRowAdapter implements SqlRow {
@@ -145,6 +136,11 @@ public class JdbcStream extends JdbcTemplate {
         @Override
         public Timestamp getTimestamp(String columnLabel) {
             return sqlRowSet.getTimestamp(columnLabel);
+        }
+
+        @Override
+        public Float getFloat(String columnLabel) {
+            return sqlRowSet.getFloat(columnLabel);
         }
     }
 }

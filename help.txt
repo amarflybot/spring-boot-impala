@@ -1,0 +1,22 @@
+Success! Kerberos is now running. You can enable Kerberos in a Cloudera Manager
+cluster from the drop-down menu for that cluster on the CM home page. It will
+ask you to confirm that this script performed the following steps:
+
+    * set up a working KDC.
+    * checked that the KDC allows renewable tickets.
+    * installed the client libraries.
+    * created a proper account for Cloudera Manager.
+
+Then, it will prompt you for the following details (accept defaults if not
+specified here):
+
+    KDC Type:                MIT KDC
+    KDC Server Host:         quickstart.cloudera
+    Kerberos Security Realm: CLOUDERA
+
+Later, it will prompt you for KDC account manager credentials:
+
+    Username: cloudera-scm/admin (@ CLOUDERA)
+    Password: cloudera
+
+[cloudera@quickstart ~]$

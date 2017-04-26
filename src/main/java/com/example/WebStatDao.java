@@ -3,7 +3,6 @@ package com.example;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -27,17 +26,17 @@ public class WebStatDao {
                     .stream()
                     .forEach(sqlRow -> {
                         try {
-                            WebStat webStat = WebStatMapper.mapWebStat(sqlRow);
+                            WebLog webLog = WebLogMapper.mapWebLog(sqlRow);
                             if (first[0]) {
                                 writer.write(",");
                             }
                             first[0] = true;
-                            writer.write(gson.toJson(webStat));
+                            writer.write(gson.toJson(webLog));
                             writer.flush();
                             //TimeUnit.MILLISECONDS.sleep(500);
-                            //return webStat;
+                            //return webLog;
                         } catch (RuntimeException e) {
-                            throw new RuntimeException("Cannot convert SqlRom to WebStat");
+                            throw new RuntimeException("Cannot convert SqlRom to WebLog");
                         }
                     });
         } catch (SQLException e) {

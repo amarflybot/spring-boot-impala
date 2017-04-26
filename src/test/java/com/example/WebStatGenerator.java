@@ -25,9 +25,9 @@ public class WebStatGenerator {
     private JdbcTemplate jdbcTemplate;
 
     public void generateData(WebStatGenerator webStatGenerator){
-        for (int i = 0; i < 100000; i++) {
-            WebStat webStat =
-                    new WebStat()
+        /*for (int i = 0; i < 100000; i++) {
+            WebLog webLog =
+                    new WebLog()
                     .setHost(webStatGenerator.selectHost())
                     .setDomain(webStatGenerator.selectDomain())
                     .setDate(webStatGenerator.selectDate())
@@ -35,19 +35,19 @@ public class WebStatGenerator {
                     .setActiveVisitor(df.getNumberUpTo(999))
                     .setDb(df.getNumberUpTo(999))
                     .setCore(df.getNumberUpTo(999));
-            //LOG.info("Created WebStat --> "+ webStat);
+            //LOG.info("Created WebLog --> "+ webLog);
             String sql = "INSERT INTO WEB_STAT VALUES (?," +
                     " ?, ?, ?, ?, ?, ?)";
 
-            int update = jdbcTemplate.update(sql, new Object[]{webStat.getHost(),
-                    webStat.getDomain(), TimestampTz.from(Instant.now()), webStat.getFeature(),
-                    webStat.getActiveVisitor(), webStat.getDb(), webStat.getCore()});
+            int update = jdbcTemplate.update(sql, new Object[]{webLog.getHost(),
+                    webLog.getDomain(), TimestampTz.from(Instant.now()), webLog.getFeature(),
+                    webLog.getActiveVisitor(), webLog.getDb(), webLog.getCore()});
 
             if (update == -1){
-                LOG.info("Inserted WebStat --> "+ webStat);
+                LOG.info("Inserted WebLog --> "+ webLog);
             }
 
-        }
+        }*/
     }
 
     private String selectHost(){
